@@ -210,7 +210,7 @@ class Bed extends Transparent{
 		return true;
 	}
 
-	public function getDrops(Item $item){
+	public function getDrops(Item $item) : array{
 		if($this->isHeadPart()){
 			$tile = $this->getLevel()->getTile($this);
 			if($tile instanceof TileBed){
