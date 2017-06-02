@@ -49,10 +49,10 @@ You need to request the hosting company you're using to add in Rocky as a server
 * __[Contributing Guidelines: Coming Soon](#)__
 
 **Contact and Social**
-* __[Forums: Coming Soon](#)__
+* __[Forums](http://rockysoftware.rf.gd/phpbb)__
 * __[Gitter Chat: Coming Soon](#)__
 * __[Official Twitter Account: Coming Soon](#)__
-* __[Discord Chat](https://discord.gg/jm7PQ2H)(#)__
+* __[Discord Chat](https://discord.gg/jm7PQ2H)__
 
 ## Features
 - Little to no lag at all!
