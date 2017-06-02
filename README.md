@@ -50,7 +50,7 @@ You need to request the hosting company you're using to add in Rocky as a server
 
 **Contact and Social**
 * __[Forums](http://rockysoftware.rf.gd/phpbb)__
-* __[Gitter Chat: Coming Soon](#)__
+* __[Gitter Chat](https://gitter.im/Rocky-Software/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link)__
 * __[Official Twitter Account: Coming Soon](#)__
 * __[Discord Chat](https://discord.gg/jm7PQ2H)__
 * __[RockySoftware app](https://www.mediafire.com/file/bb0xdjryu48a9tv/RockySoftware.apk)__
