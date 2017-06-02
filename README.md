@@ -10,8 +10,8 @@
 - This will not be deleted, if this dies the code will still be here
 
 ## Builds
-TravisCI: [![TravisCI](https://travis-ci.org/RockyTeam-eng/Rocky.svg?branch=master)](https://travis-ci.org/RockyTeam-eng/Rocky)<br>
-CircleCI: [![CircleCI](https://circleci.com/gh/RockyTeam-eng/Rocky/tree/master.svg?style=svg)](https://circleci.com/gh/RockyTeam-eng/Rocky/tree/master)<br>
+TravisCI: [![TravisCI](https://travis-ci.org/RockySoftware/Rocky.svg?branch=master)](https://travis-ci.org/RockySoftware/Rocky)<br>
+CircleCI: [![CircleCI](https://circleci.com/gh/RockySoftware/Rocky/tree/master.svg?style=svg)](https://circleci.com/gh/RockySoftware/Rocky/tree/master)<br>
 
 ## Installation
 
