@@ -1,20 +1,19 @@
-sudo: false
+sudo: true
 
 language: php
 php:
- - 7.0.12
+ - 7.0
+ 
+notifications: 
+ email: false
 
 before_script:
  - phpenv config-rm xdebug.ini
  - mkdir plugins
- - wget -O plugins/DevTools.phar https://github.com/PocketMine/DevTools/releases/download/v1.11.0/DevTools_v1.11.0.phar
  - pecl install channel://pecl.php.net/pthreads-3.1.6
  - pecl install channel://pecl.php.net/weakref-0.3.2
- - git clone https://github.com/ClearSkyTeam/CI-Test 
- - echo | pecl install channel://pecl.php.net/yaml-2.0.0RC8
+ - echo | pecl install channel://pecl.php.net/yaml-2.0.0
+ - chmod 777 ci.sh
 
 script:
- - ./ci/run.sh
-
-notifications:
-  email: false
+ - ./ci.sh
