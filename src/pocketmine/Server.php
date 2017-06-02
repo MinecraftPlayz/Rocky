@@ -1463,7 +1463,7 @@ class Server{
   §3Rocky§f is a custom version of §bgenisyspro§f, modified by §5RockyTeam-eng§f
   Version: §6' . $this->getPocketMineVersion() . '§f
   suported client versions: §b' . $version . '§f
-  Source code: §dhttps://github.com/RockyTeam-eng/Rocky§f 
+  Source code: §dhttps://github.com/RockySoftware/Rocky§f 
   PHP version: §e' . PHP_VERSION . '§f
   server os: §6' . PHP_OS .'§f
   owners: §dcaspervanneck, ExaSonit, BajanAmerican12, Fabiansigala
