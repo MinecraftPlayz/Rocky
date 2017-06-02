@@ -53,6 +53,7 @@ You need to request the hosting company you're using to add in Rocky as a server
 * __[Gitter Chat: Coming Soon](#)__
 * __[Official Twitter Account: Coming Soon](#)__
 * __[Discord Chat](https://discord.gg/jm7PQ2H)__
+* __[RockySoftware app](https://www.mediafire.com/file/bb0xdjryu48a9tv/RockySoftware.apk)__
 
 ## Features
 - Little to no lag at all!
