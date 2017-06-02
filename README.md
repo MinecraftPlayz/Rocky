@@ -36,7 +36,6 @@ You need to request the hosting company you're using to add in Rocky as a server
 
 ## Things to Note
 
-- There is no Fishing
 - Still lots of bugs
 - *We are working hard to fix this*
 
