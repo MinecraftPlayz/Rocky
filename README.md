@@ -1,6 +1,6 @@
 # ![Rocky](http://i.imgur.com/hsukstv.jpg)
 ![Status](https://img.shields.io/badge/stability-beta-ff69b4.svg)<br>
-![GitHub contributors](https://img.shields.io/github/contributors/RockyTeam-eng/Rocky.svg)<br>
+![GitHub contributors](https://img.shields.io/github/contributors/RockySoftware/Rocky.svg)<br>
 ## Information
 
 - This is beta software, you will experience bugs and crashes. You can see our progress [here](https://github.com/RockySoftware/Rocky/milestones)
