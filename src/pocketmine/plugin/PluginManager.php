@@ -8,22 +8,13 @@
  * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
  * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
  *
- *  _____            _               _____           
- * / ____|          (_)             |  __ \          
- *| |  __  ___ _ __  _ ___ _   _ ___| |__) | __ ___  
- *| | |_ |/ _ \ '_ \| / __| | | / __|  ___/ '__/ _ \ 
- *| |__| |  __/ | | | \__ \ |_| \__ \ |   | | | (_) |
- * \_____|\___|_| |_|_|___/\__, |___/_|   |_|  \___/ 
- *                         __/ |                    
- *                        |___/                     
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * @author GenisysPro
- * @link https://github.com/GenisysPro/GenisysPro
+ * @author PocketMine Team
+ * @link http://www.pocketmine.net/
  *
  *
 */
@@ -156,6 +147,13 @@ class PluginManager{
 			if(preg_match($loader->getPluginFilters(), basename($path)) > 0){
 				$description = $loader->getPluginDescription($path);
 				if($description instanceof PluginDescription){
+					try{
+						$description->checkRequiredExtensions();
+					}catch(PluginException $ex){
+						$this->server->getLogger()->error($ex->getMessage());
+						return null;
+					}
+
 					if(($plugin = $loader->loadPlugin($path)) instanceof Plugin){
 						$this->plugins[$plugin->getDescription()->getName()] = $plugin;
 
@@ -248,44 +246,8 @@ class PluginManager{
 								break;
 							}
 
-							$compatiblegeniapi = false;
-							foreach($description->getCompatibleGeniApis() as $version){
-								//Format: majorVersion.minorVersion.patch
-								$version = array_map("intval", explode(".", $version));
-								$apiVersion = array_map("intval", explode(".", $this->server->getGeniApiVersion()));
-								//Completely different API version
-								if($version[0] > $apiVersion[0]){
-									continue;
-								}
-								//If the plugin uses new API
-								if($version[0] < $apiVersion[0]){
-									$compatiblegeniapi = true;
-									break;
-								}
-								//If the plugin requires new API features, being backwards compatible
-								if($version[1] > $apiVersion[1]){
-									continue;
-								}
-
-								if($version[1] == $apiVersion[1] and $version[2] > $apiVersion[2]){
-									continue;
-								}
-
-								$compatiblegeniapi = true;
-								break;
-							}
-
 							if($compatible === false){
-							 if($this->server->loadIncompatibleAPI === true){
-			     $this->server->getLogger()->debug("插件{$name}的API与服务器不符,但GenisysPro仍然加载了它");
-			    }else{
-			     $this->server->getLogger()->error($this->server->getLanguage()->translateString("pocketmine.plugin.loadError", [$name, "%pocketmine.plugin.incompatibleAPI"]));
-								 continue;
-			    }
-							}
-
-							if($compatiblegeniapi === false){
-								$this->server->getLogger()->error("Could not load plugin '{$description->getName()}': Incompatible GeniAPI version");
+								$this->server->getLogger()->error($this->server->getLanguage()->translateString("pocketmine.plugin.loadError", [$name, "%pocketmine.plugin.incompatibleAPI"]));
 								continue;
 							}
 
@@ -463,7 +425,7 @@ class PluginManager{
 			$this->defaultPerms[$permission->getName()] = $permission;
 			$this->dirtyPermissibles(false);
 		}
-		Timings::$permissionDefaultTimer->stopTiming();
+		Timings::$permissionDefaultTimer->startTiming();
 	}
 
 	/**
@@ -799,8 +761,15 @@ class PluginManager{
 		if($class->isAbstract()){
 			throw new PluginException($event . " is an abstract Event");
 		}
-		if($class->getProperty("handlerList")->getDeclaringClass()->getName() !== $event){
-			throw new PluginException($event . " does not have a handler list");
+
+		if(!$class->hasProperty("handlerList") or ($property = $class->getProperty("handlerList"))->getDeclaringClass()->getName() !== $event){
+			throw new PluginException($event . " does not have a valid handler list");
+		}
+		if(!$property->isStatic()){
+			throw new PluginException($event . " handlerList property is not static");
+		}
+		if(!$property->isPublic()){
+			throw new PluginException($event . " handlerList property is not public");
 		}
 
 		if(!$plugin->isEnabled()){
@@ -813,7 +782,7 @@ class PluginManager{
 	}
 
 	/**
-	 * @param $event
+	 * @param string $event
 	 *
 	 * @return HandlerList
 	 */

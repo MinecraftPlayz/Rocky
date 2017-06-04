@@ -40,11 +40,11 @@ class BurningFurnace extends Solid{
 		$this->meta = $meta;
 	}
 
-	public function getName() : string{
+	public function getName(){
 		return "Burning Furnace";
 	}
 
-	public function canBeActivated() : bool{
+	public function canBeActivated(){
 		return true;
 	}
 
@@ -126,7 +126,7 @@ class BurningFurnace extends Solid{
 		return true;
 	}
 
-	public function getDrops(Item $item) : array{
+	public function getDrops(Item $item){
 		$drops = [];
 		if($item->isPickaxe() >= Tool::TIER_WOODEN){
 			$drops[] = [Item::FURNACE, 0, 1];

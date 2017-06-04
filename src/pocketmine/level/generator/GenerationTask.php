@@ -27,7 +27,6 @@ use pocketmine\level\SimpleChunkManager;
 use pocketmine\scheduler\AsyncTask;
 use pocketmine\Server;
 
-
 class GenerationTask extends AsyncTask{
 
 	public $state;

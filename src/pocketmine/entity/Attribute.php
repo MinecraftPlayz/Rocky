@@ -21,8 +21,6 @@
 
 namespace pocketmine\entity;
 
-use pocketmine\Server;
-
 class Attribute{
 
 	const ABSORPTION = 0;
@@ -108,7 +106,7 @@ class Attribute{
 		return null;
 	}
 
-	public function __construct($id, $name, $minValue, $maxValue, $defaultValue, $shouldSend = true){
+	private function __construct($id, $name, $minValue, $maxValue, $defaultValue, $shouldSend = true){
 		$this->id = (int) $id;
 		$this->name = (string) $name;
 		$this->minValue = (float) $minValue;
@@ -167,14 +165,18 @@ class Attribute{
 		return $this;
 	}
 
+	public function resetToDefault(){
+		$this->setValue($this->getDefaultValue());
+	}
+
 	public function getValue(){
 		return $this->currentValue;
 	}
 
-	public function setValue($value, bool $fit = true, bool $shouldSend = false){
+	public function setValue($value, $fit = false, bool $forceSend = false){
 		if($value > $this->getMaxValue() or $value < $this->getMinValue()){
 			if(!$fit){
-				Server::getInstance()->getLogger()->error("[Attribute / {$this->getName()}] Value $value exceeds the range!");
+				throw new \InvalidArgumentException("Value $value exceeds the range!");
 			}
 			$value = min(max($value, $this->getMinValue()), $this->getMaxValue());
 		}
@@ -182,11 +184,10 @@ class Attribute{
 		if($this->currentValue != $value){
 			$this->desynchronized = true;
 			$this->currentValue = $value;
-		}
-
-		if($shouldSend){
+		}elseif($forceSend){
 			$this->desynchronized = true;
 		}
+
 		return $this;
 	}
 

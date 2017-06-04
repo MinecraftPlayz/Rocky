@@ -25,7 +25,6 @@ namespace pocketmine\command;
 
 use pocketmine\Thread;
 
-
 class CommandReader extends Thread{
 
 	const TYPE_READLINE = 0;
@@ -35,13 +34,12 @@ class CommandReader extends Thread{
 	/** @var \Threaded */
 	protected $buffer;
 	private $shutdown = false;
-
 	private $type = self::TYPE_STREAM;
 
 	public function __construct(){
 		$this->buffer = new \Threaded;
-
 		$opts = getopt("", ["disable-readline"]);
+
 		if((extension_loaded("readline") and !isset($opts["disable-readline"]) and !$this->isPipe(STDIN))){
 			$this->type = self::TYPE_READLINE;
 		}

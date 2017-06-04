@@ -72,14 +72,14 @@ abstract class PluginBase implements Plugin{
 	/**
 	 * @return bool
 	 */
-	public final function isEnabled(){
+	final public function isEnabled(){
 		return $this->isEnabled === true;
 	}
 
 	/**
 	 * @param bool $boolean
 	 */
-	public final function setEnabled($boolean = true){
+	final public function setEnabled($boolean = true){
 		if($this->isEnabled !== $boolean){
 			$this->isEnabled = $boolean;
 			if($this->isEnabled === true){
@@ -93,19 +93,19 @@ abstract class PluginBase implements Plugin{
 	/**
 	 * @return bool
 	 */
-	public final function isDisabled(){
+	final public function isDisabled(){
 		return $this->isEnabled === false;
 	}
 
-	public final function getDataFolder(){
+	final public function getDataFolder(){
 		return $this->dataFolder;
 	}
 
-	public final function getDescription(){
+	final public function getDescription(){
 		return $this->description;
 	}
 
-	public final function init(PluginLoader $loader, Server $server, PluginDescription $description, $dataFolder, $file){
+	final public function init(PluginLoader $loader, Server $server, PluginDescription $description, $dataFolder, $file){
 		if($this->initialized === false){
 			$this->initialized = true;
 			$this->loader = $loader;
@@ -128,7 +128,7 @@ abstract class PluginBase implements Plugin{
 	/**
 	 * @return bool
 	 */
-	public final function isInitialized(){
+	final public function isInitialized(){
 		return $this->initialized;
 	}
 
@@ -251,8 +251,9 @@ abstract class PluginBase implements Plugin{
 
 	public function saveDefaultConfig(){
 		if(!file_exists($this->configFile)){
-			$this->saveResource("config.yml", false);
+			return $this->saveResource("config.yml", false);
 		}
+		return false;
 	}
 
 	public function reloadConfig(){
@@ -266,21 +267,21 @@ abstract class PluginBase implements Plugin{
 	/**
 	 * @return Server
 	 */
-	public final function getServer(){
+	final public function getServer(){
 		return $this->server;
 	}
 
 	/**
 	 * @return string
 	 */
-	public final function getName(){
+	final public function getName(){
 		return $this->description->getName();
 	}
 
 	/**
 	 * @return string
 	 */
-	public final function getFullName(){
+	final public function getFullName(){
 		return $this->description->getFullName();
 	}
 

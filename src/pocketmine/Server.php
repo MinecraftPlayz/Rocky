@@ -1460,7 +1460,7 @@ class Server{
 	public function about(){
 	 $version = implode(",",ProtocolInfo::MINECRAFT_VERSION);
 		$string = '
-  §3Rocky§f is a custom version of §bgenisyspro§f, modified by §5RockySoftware§f
+  §3Rocky§f is a custom version of §bgenisyspro and pmmp§f, modified by §5RockySoftware§f
   Version: §6' . $this->getPocketMineVersion() . '§f
   suported client versions: §b' . $version . '§f
   Source code: §dhttps://github.com/RockySoftware/Rocky§f 

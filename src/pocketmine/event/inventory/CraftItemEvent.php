@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  *  ____            _        _   __  __ _                  __  __ ____
@@ -17,6 +18,7 @@
  *
  *
  */
+
 namespace pocketmine\event\inventory;
 
 use pocketmine\event\Cancellable;
@@ -27,12 +29,14 @@ use pocketmine\Player;
 
 class CraftItemEvent extends Event implements Cancellable{
 	public static $handlerList = null;
+
 	/** @var Item[] */
 	private $input = [];
 	/** @var Recipe */
 	private $recipe;
 	/** @var \pocketmine\Player */
 	private $player;
+
 
 	/**
 	 * @param \pocketmine\Player $player
@@ -53,6 +57,7 @@ class CraftItemEvent extends Event implements Cancellable{
 		foreach($this->input as $i => $item){
 			$items[$i] = clone $item;
 		}
+
 		return $items;
 	}
 

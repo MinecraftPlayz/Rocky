@@ -8,31 +8,23 @@
  * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
  * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
  *
- *  _____            _               _____           
- * / ____|          (_)             |  __ \          
- *| |  __  ___ _ __  _ ___ _   _ ___| |__) | __ ___  
- *| | |_ |/ _ \ '_ \| / __| | | / __|  ___/ '__/ _ \ 
- *| |__| |  __/ | | | \__ \ |_| \__ \ |   | | | (_) |
- * \_____|\___|_| |_|_|___/\__, |___/_|   |_|  \___/ 
- *                         __/ |                    
- *                        |___/                     
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * @author GenisysPro
- * @link https://github.com/GenisysPro/GenisysPro
+ * @author PocketMine Team
+ * @link http://www.pocketmine.net/
  *
  *
 */
 
 namespace pocketmine;
 
-use pocketmine\network\protocol\Info;
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\plugin\PluginBase;
 use pocketmine\plugin\PluginLoadOrder;
+use pocketmine\plugin\PluginManager;
 use pocketmine\utils\Utils;
 use pocketmine\utils\VersionString;
 use raklib\RakLib;
@@ -50,7 +42,10 @@ class CrashDump{
 	public function __construct(Server $server){
 		$this->time = time();
 		$this->server = $server;
-		$this->path = $this->server->getCrashPath() . "CrashDump_" . date("D_M_j-H.i.s-T_Y", $this->time) . ".log";
+		if(!is_dir($this->server->getDataPath() . "crashdumps")){
+			mkdir($this->server->getDataPath() . "crashdumps");
+		}
+		$this->path = $this->server->getDataPath() . "crashdumps/" . date("D_M_j-H.i.s-T_Y", $this->time) . ".log";
 		$this->fp = @fopen($this->path, "wb");
 		if(!is_resource($this->fp)){
 			throw new \RuntimeException("Could not create Crash Dump");
@@ -58,20 +53,13 @@ class CrashDump{
 		$this->data["time"] = $this->time;
 		$this->addLine($this->server->getName() . " Crash Dump " . date("D M j H:i:s T Y", $this->time));
 		$this->addLine();
-		try{
-			$this->baseCrash();
-		}catch(\Exception $e){
-			//Attempt to fix incomplete crashdumps
-			$this->addLine("CrashDump crashed while generating base crash data");
-			$this->addLine();
-		}
-		
+		$this->baseCrash();
 		$this->generalData();
 		$this->pluginsData();
 
 		$this->extraData();
 
-		//$this->encodeData();
+		$this->encodeData();
 	}
 
 	public function getPath(){
@@ -99,7 +87,7 @@ class CrashDump{
 	}
 
 	private function pluginsData(){
-		if(class_exists("pocketmine\\plugin\\PluginManager", false)){
+		if($this->server->getPluginManager() instanceof PluginManager){
 			$this->addLine();
 			$this->addLine("Loaded plugins:");
 			$this->data["plugins"] = [];
@@ -156,7 +144,7 @@ class CrashDump{
 			$error = $lastExceptionError;
 		}else{
 			$error = (array) error_get_last();
-			$error["trace"] = @getTrace(3);
+			$error["trace"] = getTrace(4); //Skipping CrashDump->baseCrash, CrashDump->construct, Server->crashDump
 			$errorConversion = [
 				E_ERROR => "E_ERROR",
 				E_WARNING => "E_WARNING",
@@ -176,7 +164,7 @@ class CrashDump{
 			];
 			$error["fullFile"] = $error["file"];
 			$error["file"] = cleanPath($error["file"]);
-			$error["type"] = isset($errorConversion[$error["type"]]) ? $errorConversion[$error["type"]] : $error["type"];
+			$error["type"] = $errorConversion[$error["type"]] ?? $error["type"];
 			if(($pos = strpos($error["message"], "\n")) !== false){
 				$error["message"] = substr($error["message"], 0, $pos);
 			}
@@ -193,7 +181,7 @@ class CrashDump{
 		$this->addLine("File: " . $error["file"]);
 		$this->addLine("Line: " . $error["line"]);
 		$this->addLine("Type: " . $error["type"]);
-		
+
 		if(strpos($error["file"], "src/pocketmine/") === false and strpos($error["file"], "src/raklib/") === false and file_exists($error["fullFile"])){
 			$this->addLine();
 			$this->addLine("THIS CRASH WAS CAUSED BY A PLUGIN");
@@ -206,7 +194,7 @@ class CrashDump{
 				$filePath = \pocketmine\cleanPath($file->getValue($plugin));
 				if(strpos($error["file"], $filePath) === 0){
 					$this->data["plugin"] = $plugin->getName();
-					$this->addLine("BAD PLUGIN : " . $plugin->getDescription()->getFullName());
+					$this->addLine("BAD PLUGIN: " . $plugin->getDescription()->getFullName());
 					break;
 				}
 			}
@@ -237,7 +225,10 @@ class CrashDump{
 	private function generalData(){
 		$version = new VersionString();
 		$this->data["general"] = [];
-		$this->data["general"]["protocol"] = Info::CURRENT_PROTOCOL;
+		$this->data["general"]["name"] = $this->server->getName();
+		$this->data["general"]["version"] = $version->get(false);
+		$this->data["general"]["build"] = $version->getBuild();
+		$this->data["general"]["protocol"] = ProtocolInfo::CURRENT_PROTOCOL;
 		$this->data["general"]["api"] = \pocketmine\API_VERSION;
 		$this->data["general"]["git"] = \pocketmine\GIT_COMMIT;
 		$this->data["general"]["raklib"] = RakLib::VERSION;
@@ -246,15 +237,12 @@ class CrashDump{
 		$this->data["general"]["zend"] = zend_version();
 		$this->data["general"]["php_os"] = PHP_OS;
 		$this->data["general"]["os"] = Utils::getOS();
-		$this->addLine("Genisys version: " . \pocketmine\GIT_COMMIT . " [Protocol " . Info::CURRENT_PROTOCOL . "; API " . API_VERSION . "]");
+		$this->addLine($this->server->getName() . " version: " . $version->get(false) . " #" . $version->getBuild() . " [Protocol " . ProtocolInfo::CURRENT_PROTOCOL . "; API " . API_VERSION . "]");
+		$this->addLine("Git commit: " . GIT_COMMIT);
 		$this->addLine("uname -a: " . php_uname("a"));
-		$this->addLine("PHP version: " . phpversion());
+		$this->addLine("PHP Version: " . phpversion());
 		$this->addLine("Zend version: " . zend_version());
 		$this->addLine("OS : " . PHP_OS . ", " . Utils::getOS());
-		$this->addLine();
-		$this->addLine("Server uptime: " . $this->server->getUptime());
-		$this->addLine("Number of loaded worlds: " . count($this->server->getLevels()));
-		$this->addLine("Players online: ".count($this->server->getOnlinePlayers())."/".$this->server->getMaxPlayers());
 	}
 
 	public function addLine($line = ""){
