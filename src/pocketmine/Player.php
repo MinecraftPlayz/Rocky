@@ -240,9 +240,9 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 
 	/** @var bool */
 	public $playedBefore;
-	public $spawned = false;
-	public $loggedIn = false;
 	public $joined = false;
+	public $loggedIn = false;
+	public $loggedIP = false;
 	public $gamemode;
 	public $lastBreak;
 
@@ -325,7 +325,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 
 	public function getLeaveMessage(){
 		return new TranslationContainer(TextFormat::YELLOW . "%multiplayer.player.left", [
-			$this->getDisplayName()
+			$this->getPlayerName()
 		]);
 	}
 
@@ -352,7 +352,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 	public function setBanned($value){
 		if($value === true){
 			$this->server->getNameBans()->addBan($this->getName(), null, null, null);
-			$this->kick("You have been banned");
+			$this->kick("You have been banned, from RockySoftware.");
 		}else{
 			$this->server->getNameBans()->remove($this->getName());
 		}
@@ -522,7 +522,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 	 * @return bool
 	 */
 	public function isOnline(){
-		return $this->connected === true and $this->loggedIn === true;
+		return $this->connected === true and $this->joined === true;
 	}
 
 	/**
@@ -567,7 +567,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 	 */
 	public function hasPermission($name){
 		if($this->closed){
-			throw new \InvalidStateException("Trying to get permissions of closed player");
+			throw new \InvalidStateException("Trying to get permissions of closed player" . $this => getPlayer() => closed);
 		}
 		return $this->perm->hasPermission($name);
 	}
@@ -670,10 +670,6 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 	/**
 	 * @param string $achievementId
 	 */
-	public function removeAchievement($achievementId){
-		if($this->hasAchievement($achievementId)){
-			$this->achievements[$achievementId] = false;
-		}
 	}
 
 	/**
