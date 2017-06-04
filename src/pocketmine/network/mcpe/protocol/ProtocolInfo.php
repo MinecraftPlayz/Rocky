@@ -41,7 +41,7 @@ interface ProtocolInfo{
 	/**
 	 * Current Minecraft PE version reported by the server. This is usually the earliest currently supported version.
 	 */
-	const MINECRAFT_VERSION = 'v1.1.0.55';
+	const MINECRAFT_VERSION = 'v1.1.0';
 	/**
 	 * Version number sent to clients in ping responses.
 	 */
@@ -140,5 +140,6 @@ interface ProtocolInfo{
 	const STRUCTURE_BLOCK_UPDATE_PACKET = 0x5b;
 	const SHOW_STORE_OFFER_PACKET = 0x5c;
 	const PURCHASE_RECEIPT_PACKET = 0x5d;
+	const MARKETPLACE_RESOURCE_PACK = 0x5m;
 
 }
