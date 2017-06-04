@@ -55,13 +55,14 @@ use pocketmine\nbt\tag\LongTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\CompressBatchedTask;
+use pocketmine\network\mcpe\protocol\BatchPacket;
+use pocketmine\network\mcpe\protocol\DataPacket;
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
+use pocketmine\network\mcpe\protocol\ProtocolInfo as Info;
+use pocketmine\network\mcpe\protocol\PlayerListPacket;
+use pocketmine\network\mcpe\RakLibInterface;
 use pocketmine\network\Network;
-use pocketmine\network\protocol\BatchPacket;
-use pocketmine\network\protocol\DataPacket;
-use pocketmine\network\protocol\Info as ProtocolInfo;
-use pocketmine\network\protocol\PlayerListPacket;
 use pocketmine\network\query\QueryHandler;
-use pocketmine\network\RakLibInterface;
 use pocketmine\network\rcon\RCON;
 use pocketmine\network\upnp\UPnP;
 use pocketmine\permission\BanList;
@@ -250,47 +251,11 @@ class Server{
 
 	/** Advanced Config */
 	public $advancedConfig = null;
-
-	public $weatherEnabled = true;
-	public $foodEnabled = true;
-	public $expEnabled = true;
-	public $keepInventory = false;
+	public $onlinemode = false;
 	public $netherEnabled = false;
 	public $netherName = "nether";
 	public $netherLevel = null;
-	public $weatherRandomDurationMin = 6000;
-	public $weatherRandomDurationMax = 12000;
-	public $lightningTime = 200;
-	public $lightningFire = false;
-	public $version;
-	public $allowSnowGolem;
-	public $allowIronGolem;
-	public $autoClearInv = true;
-	public $dserverConfig = [];
-	public $dserverPlayers = 0;
-	public $dserverAllPlayers = 0;
-	public $redstoneEnabled = false;
-	public $allowFrequencyPulse = true;
-	public $anvilEnabled = false;
-	public $pulseFrequency = 20;
-	public $playerMsgType = self::PLAYER_MSG_TYPE_MESSAGE;
-	public $playerLoginMsg = "";
-	public $playerLogoutMsg = "";
-	public $keepExperience = false;
-	public $limitedCreative = true;
-	public $chunkRadius = -1;
-	public $destroyBlockParticle = true;
-	public $allowSplashPotion = true;
-	public $fireSpread = false;
-	public $advancedCommandSelector = false;
-	public $enchantingTableEnabled = true;
-	public $countBookshelf = false;
-	public $allowInventoryCheats = false;
-	public $folderpluginloader = true;
-	public $mapEnabled = true;//TODO: 配置文件
-	public $rideableentity = false;
-	public $cleanentity = false;
-	public $entityAIEnabled = false;
+// todo add some nich tings
 
 
 	/**
@@ -361,8 +326,8 @@ class Server{
 	 * @return string
 	 */
 	public function getVersion(){
-		$version = implode(",",ProtocolInfo::MINECRAFT_VERSION);
-		return $version;
+		//$version = implode(",",ProtocolInfo::MINECRAFT_VERSION);
+	//	return $version;
 	}
 
 	/**
@@ -1458,11 +1423,11 @@ class Server{
 	}
 
 	public function about(){
-	 $version = implode(",",ProtocolInfo::MINECRAFT_VERSION);
+	 //$version = implode(",",ProtocolInfo::MINECRAFT_VERSION);
 		$string = '
   §3Rocky§f is a custom version of §bgenisyspro and pmmp§f, modified by §5RockySoftware§f
   Version: §6' . $this->getPocketMineVersion() . '§f
-  suported client versions: §b' . $version . '§f
+  suported client versions: §b' . ProtocolInfo::MINECRAFT_VERSION . '§f
   Source code: §dhttps://github.com/RockySoftware/Rocky§f 
   PHP version: §e' . PHP_VERSION . '§f
   server os: §6' . PHP_OS .'§f
@@ -1471,26 +1436,11 @@ class Server{
 	
 		$this->getLogger()->info($string); //服务器处在离线模式
 	}
-
-	public function loadAdvancedConfig(){
-		$this->playerMsgType = $this->getAdvancedProperty("server.player-msg-type", self::PLAYER_MSG_TYPE_MESSAGE);
-		$this->playerLoginMsg = $this->getAdvancedProperty("server.login-msg", "§3@player joined the game");
-		$this->playerLogoutMsg = $this->getAdvancedProperty("server.logout-msg", "§3@player left the game");
-		$this->weatherEnabled = $this->getAdvancedProperty("level.weather", true);
-		$this->foodEnabled = $this->getAdvancedProperty("player.hunger", true);
-		$this->expEnabled = $this->getAdvancedProperty("player.experience", true);
-		$this->keepInventory = $this->getAdvancedProperty("player.keep-inventory", false);
-		$this->keepExperience = $this->getAdvancedProperty("player.keep-experience", false);
-		$this->loadIncompatibleAPI = $this->getAdvancedProperty("developer.load-incompatible-api", true);
-		$this->netherEnabled = $this->getAdvancedProperty("nether.allow-nether", false);
+	
+       public function loadAdvancedConfig(){
+	    $this->onlinemode = $this->getAdvancedProperty("online-mode", false);
+	    $this->netherEnabled = $this->getAdvancedProperty("nether.allow-nether", false);
 		$this->netherName = $this->getAdvancedProperty("nether.level-name", "nether");
-		$this->weatherRandomDurationMin = $this->getAdvancedProperty("level.weather-random-duration-min", 6000);
-		$this->weatherRandomDurationMax = $this->getAdvancedProperty("level.weather-random-duration-max", 12000);
-		$this->lightningTime = $this->getAdvancedProperty("level.lightning-time", 200);
-		$this->lightningFire = $this->getAdvancedProperty("level.lightning-fire", false);
-		$this->allowSnowGolem = $this->getAdvancedProperty("server.allow-snow-golem", false);
-		$this->allowIronGolem = $this->getAdvancedProperty("server.allow-iron-golem", false);
-		$this->autoClearInv = $this->getAdvancedProperty("player.auto-clear-inventory", true);
 		$this->dserverConfig = [
 			"enable" => $this->getAdvancedProperty("dserver.enable", false),
 			"queryAutoUpdate" => $this->getAdvancedProperty("dserver.query-auto-update", false),
@@ -1505,25 +1455,8 @@ class Server{
 			"retryTimes" => $this->getAdvancedProperty("dserver.retry-times", 3),
 			"serverList" => explode(";", $this->getAdvancedProperty("dserver.server-list", ""))
 		];
-		$this->redstoneEnabled = $this->getAdvancedProperty("redstone.enable", false);
-		$this->allowFrequencyPulse = $this->getAdvancedProperty("redstone.allow-frequency-pulse", false);
-		$this->pulseFrequency = $this->getAdvancedProperty("redstone.pulse-frequency", 20);
-		$this->getLogger()->setWrite(!$this->getAdvancedProperty("server.disable-log", false));
-		$this->limitedCreative = $this->getAdvancedProperty("server.limited-creative", true);
-		$this->chunkRadius = $this->getAdvancedProperty("player.chunk-radius", -1);
-		$this->destroyBlockParticle = $this->getAdvancedProperty("server.destroy-block-particle", true);
-		$this->allowSplashPotion = $this->getAdvancedProperty("server.allow-splash-potion", true);
-		$this->fireSpread = $this->getAdvancedProperty("level.fire-spread", false);
-		$this->advancedCommandSelector = $this->getAdvancedProperty("server.advanced-command-selector", false);
-		$this->anvilEnabled = $this->getAdvancedProperty("enchantment.enable-anvil", true);
-		$this->enchantingTableEnabled = $this->getAdvancedProperty("enchantment.enable-enchanting-table", true);
-		$this->countBookshelf = $this->getAdvancedProperty("enchantment.count-bookshelf", false);
-
-		$this->allowInventoryCheats = $this->getAdvancedProperty("inventory.allow-cheats", false);
-		$this->folderpluginloader = $this->getAdvancedProperty("developer.folder-plugin-loader", true);
-		$this->rideableentity = $this->getAdvancedProperty("RideableEntity", false);
-	    $this->cleanentity = $this->getAdvancedProperty("CleanEntity", false);
-		$this->entityAIEnabled = $this->getAdvancedProperty("EntityAIEnabled", false);
+	// add tings confug here
+	
 	}
 	
 	/**
@@ -1670,7 +1603,7 @@ class Server{
 			$onlineMode = $this->getConfigBoolean("online-mode", false);
 			if(!extension_loaded("openssl")){
 				$this->logger->warning("Can not find OpenSSL extension, please re-install PHP, or can not use XBox verification && material package function (development).");
-				$this->setConfigBool("online-mode", false);
+				//$this->setConfigBool("online-mode", false);
 			}elseif(!$onlineMode){
 				$this->logger->warning("The server is in offline mode!");
 			}
@@ -1779,7 +1712,7 @@ class Server{
 			Effect::init();
 			Attribute::init();
 			EnchantmentLevelTable::init();
-			Color::init();
+		//	Color::init();
 			$this->craftingManager = new CraftingManager();
 
 			$this->resourceManager = new ResourcePackManager($this, $this->getDataPath() . "resource_packs" . DIRECTORY_SEPARATOR);
@@ -1789,9 +1722,9 @@ class Server{
 			$this->pluginManager->setUseTimings($this->getProperty("settings.enable-profiling", false));
 			$this->profilingTickRate = (float) $this->getProperty("settings.profile-report-trigger", 20);
 			$this->pluginManager->registerInterface(PharPluginLoader::class);
-			if($this->folderpluginloader === true) {
-                $this->pluginManager->registerInterface(FolderPluginLoader::class);
-            }
+			//if($this->folderpluginloader === true) {
+              //  $this->pluginManager->registerInterface(FolderPluginLoader::class);
+          //  }
 			$this->pluginManager->registerInterface(ScriptPluginLoader::class);
 
 			//set_exception_handler([$this, "exceptionHandler"]);
@@ -1816,11 +1749,11 @@ class Server{
 
 			Generator::addGenerator(Flat::class, "flat");
 			Generator::addGenerator(Normal::class, "normal");
-			Generator::addGenerator(Normal2::class, "default");
+			Generator::addGenerator(Normal::class, "default");
 			Generator::addGenerator(Nether::class, "hell");
 			Generator::addGenerator(Nether::class, "nether");
 			Generator::addGenerator(Void::class, "void");
-			Generator::addGenerator(Normal2::class, "normal2");
+			//Generator::addGenerator(Normal2::class, "normal2");
 
 			foreach((array) $this->getProperty("worlds", []) as $name => $worldSetting){
 				if($this->loadLevel($name) === false){
