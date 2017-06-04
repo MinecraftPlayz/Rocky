@@ -92,6 +92,7 @@ class Block extends Position implements BlockIds, Metadatable{
 			self::$list[self::COAL_ORE] = CoalOre::class;
 			self::$list[self::WOOD] = Wood::class;
 			self::$list[self::LEAVES] = Leaves::class;
+			self::$list[self::ENDER_CHEST] = EnderChest::class;
 			self::$list[self::SPONGE] = Sponge::class;
 			self::$list[self::GLASS] = Glass::class;
 			self::$list[self::LAPIS_ORE] = LapisOre::class;

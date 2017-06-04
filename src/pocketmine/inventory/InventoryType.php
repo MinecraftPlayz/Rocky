@@ -1,5 +1,4 @@
 <?php
-
 /*
  *
  *  ____            _        _   __  __ _                  __  __ ____
@@ -18,16 +17,12 @@
  *
  *
 */
-
 namespace pocketmine\inventory;
-
 use pocketmine\network\mcpe\protocol\types\WindowTypes;
-
 /**
  * Saves all the information regarding default inventory sizes and types
  */
 class InventoryType{
-
 	//NOTE: Do not confuse these with the network IDs.
 	const CHEST = 0;
 	const DOUBLE_CHEST = 1;
@@ -39,13 +34,15 @@ class InventoryType{
 	const BREWING_STAND = 7;
 	const ANVIL = 8;
 	const ENCHANT_TABLE = 9;
-
+	const DISPENSER = 10;
+	const DROPPER = 11;
+	const HOPPER = 12;
+	const ENDER_CHEST = 13;
+	const BEACON = 14;
 	private static $default = [];
-
 	private $size;
 	private $title;
 	private $typeId;
-
 	/**
 	 * @param $index
 	 *
@@ -54,12 +51,10 @@ class InventoryType{
 	public static function get($index){
 		return static::$default[$index] ?? null;
 	}
-
 	public static function init(){
 		if(count(static::$default) > 0){
 			return;
 		}
-
 		//TODO: move network stuff out of here
 		//TODO: move inventory data to json
 		static::$default = [
@@ -71,10 +66,14 @@ class InventoryType{
 			static::FURNACE =>       new InventoryType(3, "Furnace", WindowTypes::FURNACE), //2 INPUT, 1 OUTPUT
 			static::ENCHANT_TABLE => new InventoryType(2, "Enchant", WindowTypes::ENCHANTMENT), //1 INPUT/OUTPUT, 1 LAPIS
 			static::BREWING_STAND => new InventoryType(4, "Brewing", WindowTypes::BREWING_STAND), //1 INPUT, 3 POTION
-			static::ANVIL =>         new InventoryType(3, "Anvil", WindowTypes::ANVIL) //2 INPUT, 1 OUTP
+			static::ANVIL =>         new InventoryType(3, "Anvil", WindowTypes::ANVIL), //2 INPUT, 1 OUTP
+			static::DISPENSER =>     new InventoryType(9, "Dispenser", WindowTypes::DISPENSER),
+			static::DROPPER =>       new InventoryType(9, "Dropper", WindowTypes::DROPPER),
+			static::HOPPER =>        new InventoryType(5, "Hopper", WindowTypes::HOPPER),
+			static::ENDER_CHEST =>   new InventoryType(27, "Ender Chest", WindowTypes::CONTAINER),
+			static::BEACON =>        new InventoryType(0, "Beacon", WindowTypes::BEACON)
 		];
 	}
-
 	/**
 	 * @param int    $defaultSize
 	 * @param string $defaultTitle
@@ -85,21 +84,18 @@ class InventoryType{
 		$this->title = $defaultTitle;
 		$this->typeId = $typeId;
 	}
-
 	/**
 	 * @return int
 	 */
 	public function getDefaultSize(){
 		return $this->size;
 	}
-
 	/**
 	 * @return string
 	 */
 	public function getDefaultTitle(){
 		return $this->title;
 	}
-
 	/**
 	 * @return int
 	 */
