@@ -1,12 +1,13 @@
 [submodule "src/raklib"]
 	path = src/raklib
 	url = https://github.com/pmmp/RakLib.git
+	branch = master
 [submodule "src/spl"]
 	path = src/spl
 	url = https://github.com/pmmp/PocketMine-SPL.git
-[submodule "ci/plugins/PocketMine-DevTools"]
-	path = ci/plugins/PocketMine-DevTools
-	url = https://github.com/GenisysPro/PocketMine-DevTools.git
-[submodule "ci/plugins/BetaTester"]
-	path = ci/plugins/BetaTester
-	url = https://github.com/GenisysPro/BetaTester.git
+[submodule "tests/preprocessor"]
+	path = tests/preprocessor
+	url = https://github.com/pmmp/preprocessor.git
+[submodule "tests/plugins/PocketMine-TesterPlugin"]
+	path = tests/plugins/PocketMine-TesterPlugin
+	url = https://github.com/pmmp/PocketMine-TesterPlugin.git

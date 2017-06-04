@@ -23,7 +23,6 @@ declare(strict_types = 1);
 
 namespace pocketmine\level\format\io\region;
 
-
 use pocketmine\level\format\Chunk;
 use pocketmine\level\format\io\ChunkException;
 use pocketmine\level\format\io\ChunkUtils;
@@ -34,7 +33,6 @@ use pocketmine\nbt\tag\{
 };
 use pocketmine\Player;
 use pocketmine\utils\MainLogger;
-
 
 class Anvil extends McRegion{
 
@@ -103,7 +101,7 @@ class Anvil extends McRegion{
 	public function nbtDeserialize(string $data){
 		$nbt = new NBT(NBT::BIG_ENDIAN);
 		try{
-			$nbt->readCompressed($data, ZLIB_ENCODING_DEFLATE);
+			$nbt->readCompressed($data);
 
 			$chunk = $nbt->getData();
 
@@ -156,6 +154,10 @@ class Anvil extends McRegion{
 
 	public static function getProviderName() : string{
 		return "anvil";
+	}
+
+	public static function getPcWorldFormatVersion() : int{
+		return 19133; //anvil
 	}
 
 	public function getWorldHeight() : int{

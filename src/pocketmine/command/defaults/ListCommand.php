@@ -25,14 +25,13 @@ use pocketmine\command\CommandSender;
 use pocketmine\event\TranslationContainer;
 use pocketmine\Player;
 
-
 class ListCommand extends VanillaCommand{
 
 	public function __construct($name){
 		parent::__construct(
 			$name,
 			"%pocketmine.command.list.description",
-			"%pocketmine.command.players.usage"
+			"%command.players.usage"
 		);
 		$this->setPermission("pocketmine.command.list");
 	}

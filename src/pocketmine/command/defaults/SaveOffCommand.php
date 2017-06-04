@@ -25,14 +25,13 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\event\TranslationContainer;
 
-
 class SaveOffCommand extends VanillaCommand{
 
 	public function __construct($name){
 		parent::__construct(
 			$name,
 			"%pocketmine.command.saveoff.description",
-			"%pocketmine.command.saveoff.usage"
+			"%commands.save-off.usage"
 		);
 		$this->setPermission("pocketmine.command.save.disable");
 	}
