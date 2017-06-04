@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PHP_BINARY="php"
+PHP_BINARY="php7.0"
 
 while getopts "p:" OPTION 2> /dev/null; do
 	case ${OPTION} in
