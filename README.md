@@ -54,7 +54,7 @@ You need to request the hosting company you're using to add in Rocky as a server
 * __[Official Twitter Account: Coming Soon](#)__
 * __[Discord Chat](https://discord.gg/jm7PQ2H)__
 * __[RockySoftware app](https://www.mediafire.com/file/bb0xdjryu48a9tv/RockySoftware.apk)__
-* __[RockySoftware app{Windows 10}](https://www.mediafire.com/file/r59a5yhz9dkzudl/RockySoftware.exe)__
+* __[RockySoftware app{Windows 10 BETA}](https://www.mediafire.com/file/r59a5yhz9dkzudl/RockySoftware.exe)__
 
 ## Features
 - Little to no lag at all!
